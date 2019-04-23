@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.energyConsume.dao.IEnergyConsumeDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.energyConsume.pojo.EnergyConsume"> 
+		<id property="consumeid" column="consumeid" javaType="java.lang.Integer"></id> 
+		<result property="devid" column="devid" javaType="java.lang.Integer"></result> 
+		<result property="electric" column="electric" javaType="java.lang.Double"></result> 
+		<result property="water" column="water" javaType="java.lang.Double"></result> 
+		<result property="oil" column="oil" javaType="java.lang.Double"></result> 
+		<result property="reportid" column="reportid" javaType="java.lang.Integer"></result>
+		<result property="devname" column="devname" javaType="java.lang.String"></result>
+	</resultMap> 
+
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		consumeid,bd.devid,electric,water,oil,reportid,devname
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from energy_consume ec JOIN base_device bd ON ec.devid=bd.devid
+		where ec.consumeid = #{consumeid}
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from energy_consume 
+		where consumeid = #{consumeid} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.energyConsume.pojo.EnergyConsume" > 
+		insert into energy_consume(devid,electric,water,oil,reportid) 
+		values (#{devid},#{electric},#{water},#{oil},#{reportid}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.energyConsume.pojo.EnergyConsume" > 
+		update energy_consume 
+		<set > 
+			<if test="devid != null and devid!='' " > 
+				devid = #{devid}, 
+			</if> 
+			<if test="electric != null and electric!='' " > 
+				electric = #{electric}, 
+			</if> 
+			<if test="water != null and water!='' " > 
+				water = #{water}, 
+			</if> 
+			<if test="oil != null and oil!='' " > 
+				oil = #{oil}, 
+			</if> 
+			<if test="reportid != null and reportid!='' " > 
+				reportid = #{reportid}, 
+			</if> 
+		</set> 
+		where consumeid = #{consumeid} 
+	</update> 
+	<update id="update" parameterType="com.qhit.energyConsume.pojo.EnergyConsume" > 
+		update energy_consume 
+		set  devid = #{devid}, electric = #{electric}, water = #{water}, oil = #{oil}, reportid = #{reportid} 
+		where consumeid = #{consumeid} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+		<include refid="Base_Column_List" />
+		from energy_consume ec JOIN base_device bd ON ec.devid=bd.devid
+	</select> 
+	<select id="findByDevid" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from energy_consume 
+		where devid = #{devid} 
+	</select> 
+	<select id="findByElectric" resultMap="BaseResultMap" parameterType="java.lang.Double" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from energy_consume 
+		where electric = #{electric} 
+	</select> 
+	<select id="findByWater" resultMap="BaseResultMap" parameterType="java.lang.Double" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from energy_consume 
+		where water = #{water} 
+	</select> 
+	<select id="findByOil" resultMap="BaseResultMap" parameterType="java.lang.Double" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from energy_consume 
+		where oil = #{oil} 
+	</select> 
+	<select id="findByReportid" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from energy_consume 
+		where reportid = #{reportid} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from energy_consume where consumeid in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.energyConsume.pojo.EnergyConsume" resultMap="BaseResultMap"> 
+		select * from  energy_consume ec JOIN base_device bd ON ec.devid=bd.devid
+		<where > 
+			<if test="devid != null and devid!='' " > 
+				 and ec.devid = #{devid}
+			</if> 
+			<if test="electric != null and electric!='' " > 
+				 and ec.electric = #{electric}
+			</if> 
+			<if test="water != null and water!='' " > 
+				 and ec.water = #{water}
+			</if> 
+			<if test="oil != null and oil!='' " > 
+				 and ec.oil = #{oil}
+			</if> 
+			<if test="reportid != null and reportid!='' " > 
+				 and ec.reportid = #{reportid}
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

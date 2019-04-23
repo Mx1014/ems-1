@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.produceFault.dao.IProduceFaultDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.produceFault.pojo.ProduceFault"> 
+		<id property="faultId" column="fault_id" javaType="java.lang.Integer"></id> 
+		<result property="devid" column="devid" javaType="java.lang.Integer"></result>
+		<result property="devname" column="devname" javaType="java.lang.String"></result>
+		<result property="cause" column="cause" javaType="java.lang.String"></result>
+		<result property="faultuser" column="faultuser" javaType="java.lang.String"></result>
+		<result property="faulttime" column="faulttime" javaType="java.lang.Integer"></result>
+	</resultMap> 
+
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		fault_id,devid,cause,faultuser,faulttime 
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_fault 
+		where fault_id = #{faultId} 
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from produce_fault 
+		where fault_id = #{faultId} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.produceFault.pojo.ProduceFault" > 
+		insert into produce_fault(devid,cause,faultuser,faulttime) 
+		values (#{devid},#{cause},#{faultuser},#{faulttime}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.produceFault.pojo.ProduceFault" > 
+		update produce_fault 
+		<set > 
+			<if test="devid != null and devid!='' " > 
+				devid = #{devid}, 
+			</if> 
+			<if test="cause != null and cause!='' " > 
+				cause = #{cause}, 
+			</if> 
+			<if test="faultuser != null and faultuser!='' " > 
+				faultuser = #{faultuser}, 
+			</if> 
+			<if test="faulttime != null and faulttime!='' " > 
+				faulttime = #{faulttime}, 
+			</if> 
+		</set> 
+		where fault_id = #{faultId} 
+	</update> 
+	<update id="update" parameterType="com.qhit.produceFault.pojo.ProduceFault" > 
+		update produce_fault 
+		set  devid = #{devid}, cause = #{cause}, faultuser = #{faultuser}, faulttime = #{faulttime} 
+		where fault_id = #{faultId} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+			pf.fault_id,bd.devname,pf.cause,pf.faultuser,pf.faulttime
+		from produce_fault pf JOIN base_device bd ON pf.devid=bd.devid;
+	</select> 
+	<select id="findByDevid" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_fault 
+		where devid = #{devid} 
+	</select> 
+	<select id="findByCause" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_fault 
+		where cause = #{cause} 
+	</select> 
+	<select id="findByFaultuser" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_fault 
+		where faultuser = #{faultuser} 
+	</select> 
+	<select id="findByFaulttime" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_fault 
+		where faulttime = #{faulttime} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from produce_fault where fault_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.produceFault.pojo.ProduceFault" resultMap="BaseResultMap"> 
+		select * from  produce_fault pf JOIN base_device bd ON pf.devid=bd.devid
+		<where > 
+			<if test="devid != null and devid!='' " > 
+				 and pr.devid = #{devid}
+			</if> 
+			<if test="cause != null and cause!='' " > 
+				 and pr.cause = #{cause}
+			</if> 
+			<if test="faultuser != null and faultuser!='' " > 
+				 and pr.faultuser = #{faultuser}
+			</if> 
+			<if test="faulttime != null and faulttime!='' " > 
+				 and pr.faulttime = #{faulttime}
+			</if> 
+		</where> 
+	</select> 
+</mapper> 

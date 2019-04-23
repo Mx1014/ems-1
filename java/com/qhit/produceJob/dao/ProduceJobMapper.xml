@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.qhit.produceJob.dao.IProduceJobDao"> 
+	<!-- 自定义结果集 --> 
+	<resultMap id="BaseResultMap" type="com.qhit.produceJob.pojo.ProduceJob"> 
+		<id property="jobid" column="jobid" javaType="java.lang.Integer"></id> 
+		<result property="devid" column="devid" javaType="java.lang.Integer"></result> 
+		<result property="starttime" column="starttime" javaType="java.lang.String"></result> 
+		<result property="completetime" column="completetime" javaType="java.lang.String"></result> 
+		<result property="duration" column="duration" javaType="java.lang.Double"></result> 
+		<result property="amount" column="amount" javaType="java.lang.Double"></result> 
+		<result property="reportid" column="reportid" javaType="java.lang.Integer"></result>
+		<result property="devname" column="devname" javaType="java.lang.String"></result>
+	</resultMap> 
+
+	<!-- 在各种标签中，id属性必须与接口中的方法名一样，id的值必须是唯一的，parameterType指查询时使用的参数类型， 
+	resultType属性指明查询返回的结果集类型    --> 
+ 
+	<sql id="Base_Column_List" > 
+		jobid,pj.devid,starttime,completetime,duration,amount,reportid,devname
+	</sql> 
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job pj JOIN base_device bd ON pj.devid=bd.devid
+		where pj.jobid = #{jobid}
+	</select> 
+	<delete id="delete" parameterType="java.lang.Integer" > 
+		delete from produce_job 
+		where jobid = #{jobid} 
+	</delete> 
+	<insert id="insert" parameterType="com.qhit.produceJob.pojo.ProduceJob" > 
+		insert into produce_job(devid,starttime,completetime,duration,amount,reportid) 
+		values (#{devid},#{starttime},#{completetime},#{duration},#{amount},#{reportid}) 
+	</insert> 
+	<update id="updateSelective" parameterType="com.qhit.produceJob.pojo.ProduceJob" > 
+		update produce_job 
+		<set > 
+			<if test="devid != null and devid!='' " > 
+				devid = #{devid}, 
+			</if> 
+			<if test="starttime != null and starttime!='' " > 
+				starttime = #{starttime}, 
+			</if> 
+			<if test="completetime != null and completetime!='' " > 
+				completetime = #{completetime}, 
+			</if> 
+			<if test="duration != null and duration!='' " > 
+				duration = #{duration}, 
+			</if> 
+			<if test="amount != null and amount!='' " > 
+				amount = #{amount}, 
+			</if> 
+			<if test="reportid != null and reportid!='' " > 
+				reportid = #{reportid}, 
+			</if> 
+		</set> 
+		where jobid = #{jobid} 
+	</update> 
+	<update id="update" parameterType="com.qhit.produceJob.pojo.ProduceJob" > 
+		update produce_job 
+		set  devid = #{devid}, starttime = #{starttime}, completetime = #{completetime}, duration = #{duration}, amount = #{amount}, reportid = #{reportid} 
+		where jobid = #{jobid} 
+	</update> 
+	<select id="findAll" resultMap="BaseResultMap" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job pj JOIN base_device bd ON pj.devid=bd.devid
+	</select> 
+	<select id="findByDevid" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job 
+		where devid = #{devid} 
+	</select> 
+	<select id="findByStarttime" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job 
+		where starttime = #{starttime} 
+	</select> 
+	<select id="findByCompletetime" resultMap="BaseResultMap" parameterType="java.lang.String" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job 
+		where completetime = #{completetime} 
+	</select> 
+	<select id="findByDuration" resultMap="BaseResultMap" parameterType="java.lang.Double" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job 
+		where duration = #{duration} 
+	</select> 
+	<select id="findByAmount" resultMap="BaseResultMap" parameterType="java.lang.Double" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job 
+		where amount = #{amount} 
+	</select> 
+	<select id="findByReportid" resultMap="BaseResultMap" parameterType="java.lang.Integer" > 
+		select 
+		<include refid="Base_Column_List" /> 
+		from produce_job 
+		where reportid = #{reportid} 
+	</select> 
+	<delete id="deleteBatch" parameterType="java.util.Arrays"> 
+		delete from produce_job where jobid in 
+		<foreach collection="array" item="id" open="(" close=")" separator=","> 
+			#{id} 
+		</foreach> 
+	</delete> 
+	<select id="search" parameterType="com.qhit.produceJob.pojo.ProduceJob" resultMap="BaseResultMap"> 
+		select * from  produce_job pj JOIN base_device bd ON pj.devid=bd.devid
+		<where > 
+			<if test="devid != null and devid!='' " > 
+				 and pj.devid = #{devid}
+			</if> 
+			<if test="starttime != null and starttime!='' " > 
+				 and starttime = #{starttime} 
+			</if> 
+			<if test="completetime != null and completetime!='' " > 
+				 and completetime = #{completetime} 
+			</if> 
+			<if test="duration != null and duration!='' " > 
+				 and duration = #{duration} 
+			</if> 
+			<if test="amount != null and amount!='' " > 
+				 and amount = #{amount} 
+			</if> 
+			<if test="reportid != null and reportid!='' " > 
+				 and reportid = #{reportid} 
+			</if> 
+		</where> 
+	</select> 
+</mapper> 
