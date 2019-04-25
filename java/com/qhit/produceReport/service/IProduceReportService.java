@@ -52,5 +52,13 @@ public interface IProduceReportService {
 
     List<ProduceReport> findByCompid(Integer compid);
 
-    List<Map> usage(String year);
+    Map<String, Object> usage(String year);
+
+    Map<String, Object> intactRatio(String year);
+
+    List<Map> cost(String year, Integer compid);
+
+    Map<String, Object> amount(String year);
+
+    Map<String, Object> consume(String year);
 }

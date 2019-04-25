@@ -73,5 +73,13 @@ public interface IProduceReportDao {
 
     List<Map> selectConsume(Map map);
 
-    List<Map> usage(String year);
+    List<Map> usage(Map<String, Object> map);
+
+    List<Map> intactRatio(Map<String, Object> map);
+
+    List<Map> cost(Map<String, Object> map);
+
+    List<Map> amount(Map<String, Object> map);
+
+    List<Map> consume(Map<String, Object> map);
 }
